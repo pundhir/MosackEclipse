@@ -1,0 +1,35 @@
+package com.myprog.mosack;
+
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
+
+public class SongsFragment extends Fragment {
+
+	private ListView songListView;
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+
+		View rootView = inflater.inflate(R.layout.songsfragment, container,
+				false);
+		songListView = (ListView) rootView.findViewById(R.id.song_list);
+
+		// @SuppressWarnings("unchecked")
+		// ArrayList<Song> songList = (ArrayList<Song>) getArguments()
+		// .getSerializable(MainActivity.DEVICE_SONG_LIST);
+		ColorDrawable myColor = new ColorDrawable(this.getResources().getColor(
+				Color.GRAY));
+		songListView.setDivider(myColor);
+		SongAdapter songAdt = new SongAdapter(getActivity(),
+				MainActivity.songList);
+		songListView.setAdapter(songAdt);
+		return rootView;
+	}
+}

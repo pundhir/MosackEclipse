@@ -1,0 +1,54 @@
+package com.myprog.mosack;
+
+import java.util.ArrayList;
+
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+ 
+public class TabsPagerAdapter extends FragmentPagerAdapter {
+ 
+	private ArrayList<Song> songList;
+	private Bundle bundle;
+	
+    public TabsPagerAdapter(FragmentManager fm, ArrayList<Song> list) {
+        super(fm);
+        this.songList = list;
+        bundle = new Bundle();
+    }
+ 
+    @Override
+    public Fragment getItem(int index) {
+ 
+        switch (index) {
+        case 0:
+            // Top Rated fragment activity
+        	SongsFragment fragment = new SongsFragment();
+        	bundle.putSerializable("DEVICE_SONGS_LIST", songList);
+        	fragment.setArguments(bundle);
+        	 return fragment;
+        case 1:
+            // Games fragment activity
+        	AlbumFragment fragment = new AlbumFragment();
+        	bundle.putSerializable("DEVICE_SONGS_LIST", songList);
+        	fragment.setArguments(bundle);
+            return fragment;
+        case 2:
+            // Movies fragment activity
+        	PlaylistFragment fragment = new PlaylistFragment();
+        	bundle.putSerializable("DEVICE_SONGS_LIST", songList);
+        	fragment.setArguments(bundle);
+        	 return fragment;
+        }
+ 
+        return null;
+    }
+ 
+    @Override
+    public int getCount() {
+        // get item count - equal to number of tabs
+        return 3;
+    }
+ 
+}

@@ -1,0 +1,120 @@
+package com.myprog.mosack;
+
+
+import java.util.ArrayList;
+
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
+import android.app.FragmentTransaction;
+import android.content.ContentResolver;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
+
+@SuppressWarnings("deprecation")
+public class MainActivity extends FragmentActivity implements
+		ActionBar.TabListener {
+
+	private ViewPager viewPager;
+	private TabsPagerAdapter mAdapter;
+	private android.app.ActionBar actionBar;
+	private ArrayList<Song> songList;
+	public static final String DEVICE_SONG_LIST = "DEVICE_SONGS_LIST";
+	
+	// Tab titles
+	private String[] tabs = { "Songs", "Albums", "Playlists" };
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+		// Initilization
+		viewPager = (ViewPager) findViewById(R.id.pager);
+		actionBar = getActionBar();
+		getSongList();
+		mAdapter = new TabsPagerAdapter(getSupportFragmentManager(), songList);
+
+		viewPager.setAdapter(mAdapter);
+		actionBar.setHomeButtonEnabled(false);
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+		/**
+		 * on swiping the viewpager make respective tab selected
+		 * */
+		viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+			@Override
+			public void onPageSelected(int position) {
+				// on changing the page
+				// make respected tab selected
+				actionBar.setSelectedNavigationItem(position);
+			}
+
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+			}
+
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+			}
+		});
+
+		// Adding Tabs
+		for (String tab_name : tabs) {
+			actionBar.addTab(actionBar.newTab().setText(tab_name)
+					.setTabListener(this));
+		}
+	}
+
+	@Override
+	public void onTabReselected(Tab arg0, FragmentTransaction arg1) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onTabSelected(Tab tab, FragmentTransaction arg1) {
+		// TODO Auto-generated method stub
+		// on tab selected
+		// show respected fragment view
+		viewPager.setCurrentItem(tab.getPosition());
+
+	}
+
+	@Override
+	public void onTabUnselected(Tab arg0, FragmentTransaction arg1) {
+		// TODO Auto-generated method stub
+
+	}
+	
+	/**
+	 * This method is used to get songs list form mobile phone.
+	 */
+	 public void getSongList() {
+	        //retrieve song info
+	        ContentResolver musicResolver = getContentResolver();
+	        Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+	        Cursor musicCursor = musicResolver.query(musicUri, null, null, null, null);
+
+	        if(musicCursor!=null && musicCursor.moveToFirst()){
+	            //get columns
+	            int titleColumn = musicCursor.getColumnIndex
+	                    (android.provider.MediaStore.Audio.Media.TITLE);
+	            int idColumn = musicCursor.getColumnIndex
+	                    (android.provider.MediaStore.Audio.Media._ID);
+	            int artistColumn = musicCursor.getColumnIndex
+	                    (android.provider.MediaStore.Audio.Media.ARTIST);
+	            //add songs to list
+	            do {
+	                long thisId = musicCursor.getLong(idColumn);
+	                String thisTitle = musicCursor.getString(titleColumn);
+	                String thisArtist = musicCursor.getString(artistColumn);
+	                songList.add(new Song(thisId, thisTitle, thisArtist));
+	            }
+	            while (musicCursor.moveToNext());
+	        }
+	    }
+}
