@@ -2,18 +2,10 @@ package com.myprog.mosack;
 
 import java.io.Serializable;
 
-
-/**
- * Created by S711256 on 17/12/2016.
- */
-
 public class Song implements Serializable {
-	
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private long id;
+
+    private static final long serialVersionUID = 1L;
+    private long id;
     private String title;
     private String artist;
 
